@@ -1,0 +1,130 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" version="29.2.9">
+  <diagram name="第 1 页" id="bme1mGS3xZXVAOI-H2mc">
+    <mxGraphModel dx="1188" dy="626" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-6" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="报税" vertex="1">
+          <mxGeometry height="60" width="120" x="70" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-9" edge="1" parent="1" source="yZSDLO3riFOJ0LaV6Sc6-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="yZSDLO3riFOJ0LaV6Sc6-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-7" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="零工" vertex="1">
+          <mxGeometry height="60" width="120" x="390" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-10" edge="1" parent="1" source="yZSDLO3riFOJ0LaV6Sc6-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="160" y="235" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-11" connectable="0" parent="yZSDLO3riFOJ0LaV6Sc6-10" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="冻结" vertex="1">
+          <mxGeometry relative="1" x="0.1321" y="1" as="geometry">
+            <mxPoint x="18" y="-1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-14" edge="1" parent="1" source="yZSDLO3riFOJ0LaV6Sc6-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="450" y="340" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-8" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="发起订单" vertex="1">
+          <mxGeometry height="30" width="60" x="420" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-12" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="冻结资金" vertex="1">
+          <mxGeometry height="30" width="60" x="100" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-16" edge="1" parent="1" source="yZSDLO3riFOJ0LaV6Sc6-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="450" y="480" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-15" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="零工结算前业务" vertex="1">
+          <mxGeometry height="30" width="60" x="420" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-18" edge="1" parent="1" source="yZSDLO3riFOJ0LaV6Sc6-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="170" y="495" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-20" edge="1" parent="1" source="yZSDLO3riFOJ0LaV6Sc6-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="450" y="680" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-17" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="发起解冻" vertex="1">
+          <mxGeometry height="30" width="60" x="420" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-19" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="解冻资金" vertex="1">
+          <mxGeometry height="30" width="60" x="110" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-22" edge="1" parent="1" source="yZSDLO3riFOJ0LaV6Sc6-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="180" y="695" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-36" edge="1" parent="1" source="yZSDLO3riFOJ0LaV6Sc6-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" target="yZSDLO3riFOJ0LaV6Sc6-29">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-21" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="发起结算" vertex="1">
+          <mxGeometry height="30" width="60" x="420" y="680" as="geometry" />
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-25" edge="1" parent="1" source="yZSDLO3riFOJ0LaV6Sc6-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="140" y="740" />
+              <mxPoint x="680" y="740" />
+            </Array>
+            <mxPoint x="740" y="740" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-23" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="结算资金，资金转账到C端账户" vertex="1">
+          <mxGeometry height="30" width="60" x="110" y="680" as="geometry" />
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-34" edge="1" parent="1" source="yZSDLO3riFOJ0LaV6Sc6-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="yZSDLO3riFOJ0LaV6Sc6-29">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="770" y="855" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-26" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="C端资金账户" vertex="1">
+          <mxGeometry height="30" width="60" x="740" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-32" edge="1" parent="1" source="yZSDLO3riFOJ0LaV6Sc6-29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="yZSDLO3riFOJ0LaV6Sc6-33">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="160" y="855" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-35" edge="1" parent="1" source="yZSDLO3riFOJ0LaV6Sc6-29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" target="yZSDLO3riFOJ0LaV6Sc6-21">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-37" connectable="0" parent="yZSDLO3riFOJ0LaV6Sc6-35" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="获取订单号与结算单号" vertex="1">
+          <mxGeometry relative="1" x="-0.3692" y="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-29" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="申请提现" vertex="1">
+          <mxGeometry height="30" width="60" x="420" y="840" as="geometry" />
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-40" edge="1" parent="1" source="yZSDLO3riFOJ0LaV6Sc6-33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="140" y="940" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-33" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="申请提现" vertex="1">
+          <mxGeometry height="30" width="60" x="110" y="840" as="geometry" />
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-43" edge="1" parent="1" source="yZSDLO3riFOJ0LaV6Sc6-41" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="yZSDLO3riFOJ0LaV6Sc6-42">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-41" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="发放相关逻辑" vertex="1">
+          <mxGeometry height="30" width="60" x="110" y="939" as="geometry" />
+        </mxCell>
+        <mxCell id="yZSDLO3riFOJ0LaV6Sc6-42" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="通知接口" vertex="1">
+          <mxGeometry height="30" width="60" x="420" y="939" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
