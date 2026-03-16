@@ -215,6 +215,13 @@
         <mxCell id="930r5yTYyz-3_tfmHkR1-14" edge="1" parent="1" source="930r5yTYyz-3_tfmHkR1-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="930r5yTYyz-3_tfmHkR1-7">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+        <mxCell id="930r5yTYyz-3_tfmHkR1-15" edge="1" parent="1" source="930r5yTYyz-3_tfmHkR1-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="930r5yTYyz-3_tfmHkR1-11">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="6190" y="710" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
         <mxCell id="930r5yTYyz-3_tfmHkR1-13" parent="1" style="text;whiteSpace=wrap;" value="ep_work_order_clock" vertex="1">
           <mxGeometry height="40" width="150" x="6128" y="500" as="geometry" />
         </mxCell>
