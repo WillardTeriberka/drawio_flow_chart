@@ -861,6 +861,199 @@
             <Array as="points" />
           </mxGeometry>
         </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-2" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="WxAttendanceController.clock&#xa;POST /miniapp/attendance/clock&#xa;入参 ClockReq" vertex="1">
+          <mxGeometry height="126" width="277" x="4904" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-3" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="AttendanceRecordServiceImpl.selectAttendanceRecordById&#xa;按 req.id 查询考勤" vertex="1">
+          <mxGeometry height="78" width="485" x="4800" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-4" parent="1" style="rhombus;strokeWidth=2;whiteSpace=wrap;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="考勤是否存在" vertex="1">
+          <mxGeometry height="150" width="150" x="4967" y="358" as="geometry" />
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-5" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="R.fail&#xa;考勤记录不存在" vertex="1">
+          <mxGeometry height="78" width="172" x="4814" y="582" as="geometry" />
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-6" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="WxBaseController.getPersonnelId&#xa;token 解析 personnelId" vertex="1">
+          <mxGeometry height="78" width="296" x="5036" y="582" as="geometry" />
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-7" parent="1" style="rhombus;strokeWidth=2;whiteSpace=wrap;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="是否本人考勤" vertex="1">
+          <mxGeometry height="150" width="150" x="5109" y="710" as="geometry" />
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-8" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="R.fail&#xa;无权限 非本人" vertex="1">
+          <mxGeometry height="78" width="161" x="5027" y="986" as="geometry" />
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-9" parent="1" style="rhombus;strokeWidth=2;whiteSpace=wrap;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="是否到打卡时间窗" vertex="1">
+          <mxGeometry height="182" width="182" x="5238" y="934" as="geometry" />
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-10" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="R.fail&#xa;未到打卡时间" vertex="1">
+          <mxGeometry height="78" width="156" x="5011" y="1226" as="geometry" />
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-11" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="R.fail&#xa;打卡时间已过" vertex="1">
+          <mxGeometry height="78" width="156" x="5217" y="1226" as="geometry" />
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-12" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="写入打卡信息&#xa;clockTime 与 clockTimeSettle&#xa;images lng lat address deviceType" vertex="1">
+          <mxGeometry height="150" width="260" x="5423" y="1190" as="geometry" />
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-13" parent="1" style="rhombus;strokeWidth=2;whiteSpace=wrap;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="clockType" vertex="1">
+          <mxGeometry height="124" width="124" x="5491" y="1390" as="geometry" />
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-14" parent="1" style="rhombus;strokeWidth=2;whiteSpace=wrap;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="是否允许上班打卡" vertex="1">
+          <mxGeometry height="182" width="182" x="5269" y="1588" as="geometry" />
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-15" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="R.fail&#xa;上班无需重复打卡" vertex="1">
+          <mxGeometry height="78" width="188" x="5111" y="1844" as="geometry" />
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-16" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="AttendanceRecordServiceImpl.clockIn&#xa;计算迟到与旷工" vertex="1">
+          <mxGeometry height="78" width="331" x="5349" y="1844" as="geometry" />
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-17" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="AttendanceRecordMapper.updateById&#xa;保存 clockResult 与 lateMinutes" vertex="1">
+          <mxGeometry height="78" width="328" x="5350" y="1984" as="geometry" />
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-18" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="R.ok&#xa;上班打卡成功 返回记录" vertex="1">
+          <mxGeometry height="78" width="225" x="5402" y="2136" as="geometry" />
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-19" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="写入追加信息 可选&#xa;additionalFlag additionalHour additionalMoney additionalNote" vertex="1">
+          <mxGeometry height="150" width="260" x="5771" y="1604" as="geometry" />
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-20" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="AttendanceRecordServiceImpl.clockOut&#xa;计算早退与旷工" vertex="1">
+          <mxGeometry height="78" width="343" x="5730" y="1844" as="geometry" />
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-21" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="计算 workHour&#xa;读取对应上班记录并扣减缺卡分钟" vertex="1">
+          <mxGeometry height="102" width="260" x="5771" y="1972" as="geometry" />
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-22" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="AttendanceRecordMapper.updateById&#xa;保存 clockResult lateMinutes workHour" vertex="1">
+          <mxGeometry height="102" width="328" x="5737" y="2124" as="geometry" />
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-23" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="R.ok&#xa;下班打卡成功 返回记录" vertex="1">
+          <mxGeometry height="78" width="225" x="5789" y="2276" as="geometry" />
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-24" edge="1" parent="1" source="XvcuGTZ6J28sGwW-tyS2-2" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="XvcuGTZ6J28sGwW-tyS2-3" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-25" edge="1" parent="1" source="XvcuGTZ6J28sGwW-tyS2-3" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="XvcuGTZ6J28sGwW-tyS2-4" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-26" edge="1" parent="1" source="XvcuGTZ6J28sGwW-tyS2-4" style="curved=1;startArrow=none;endArrow=block;exitX=0;exitY=0.89;entryX=0.5;entryY=0;rounded=0;" target="XvcuGTZ6J28sGwW-tyS2-5" value="否">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="4900" y="545" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-27" edge="1" parent="1" source="XvcuGTZ6J28sGwW-tyS2-4" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=0.89;entryX=0.5;entryY=0;rounded=0;" target="XvcuGTZ6J28sGwW-tyS2-6" value="是">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="5184" y="545" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-28" edge="1" parent="1" source="XvcuGTZ6J28sGwW-tyS2-6" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="XvcuGTZ6J28sGwW-tyS2-7" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-29" edge="1" parent="1" source="XvcuGTZ6J28sGwW-tyS2-7" style="curved=1;startArrow=none;endArrow=block;exitX=0.16;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="XvcuGTZ6J28sGwW-tyS2-8" value="否">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="5107" y="897" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-30" edge="1" parent="1" source="XvcuGTZ6J28sGwW-tyS2-7" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=0.89;entryX=0.5;entryY=0;rounded=0;" target="XvcuGTZ6J28sGwW-tyS2-9" value="是">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="5329" y="897" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-31" edge="1" parent="1" source="XvcuGTZ6J28sGwW-tyS2-9" style="curved=1;startArrow=none;endArrow=block;exitX=0;exitY=0.77;entryX=0.5;entryY=0;rounded=0;" target="XvcuGTZ6J28sGwW-tyS2-10" value="未到 clockStart">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="5089" y="1153" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-32" edge="1" parent="1" source="XvcuGTZ6J28sGwW-tyS2-9" style="curved=1;startArrow=none;endArrow=block;exitX=0.37;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="XvcuGTZ6J28sGwW-tyS2-11" value="已过 clockEnd">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="5295" y="1153" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-33" edge="1" parent="1" source="XvcuGTZ6J28sGwW-tyS2-9" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=0.79;entryX=0.5;entryY=0;rounded=0;" target="XvcuGTZ6J28sGwW-tyS2-12" value="在时间窗内">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="5553" y="1153" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-34" edge="1" parent="1" source="XvcuGTZ6J28sGwW-tyS2-12" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="XvcuGTZ6J28sGwW-tyS2-13" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-35" edge="1" parent="1" source="XvcuGTZ6J28sGwW-tyS2-13" style="curved=1;startArrow=none;endArrow=block;exitX=0;exitY=0.76;entryX=0.5;entryY=0;rounded=0;" target="XvcuGTZ6J28sGwW-tyS2-14" value="CLOCK_IN">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="5360" y="1551" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-36" edge="1" parent="1" source="XvcuGTZ6J28sGwW-tyS2-14" style="curved=1;startArrow=none;endArrow=block;exitX=0;exitY=0.91;entryX=0.5;entryY=0;rounded=0;" target="XvcuGTZ6J28sGwW-tyS2-15" value="clockResult 不是 MISS">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="5205" y="1807" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-37" edge="1" parent="1" source="XvcuGTZ6J28sGwW-tyS2-14" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=0.91;entryX=0.5;entryY=0;rounded=0;" target="XvcuGTZ6J28sGwW-tyS2-16" value="允许">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="5514" y="1807" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-38" edge="1" parent="1" source="XvcuGTZ6J28sGwW-tyS2-16" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="XvcuGTZ6J28sGwW-tyS2-17" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-39" edge="1" parent="1" source="XvcuGTZ6J28sGwW-tyS2-17" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="XvcuGTZ6J28sGwW-tyS2-18" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-40" edge="1" parent="1" source="XvcuGTZ6J28sGwW-tyS2-13" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=0.64;entryX=0.5;entryY=0;rounded=0;" target="XvcuGTZ6J28sGwW-tyS2-19" value="CLOCK_OUT">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="5901" y="1551" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-41" edge="1" parent="1" source="XvcuGTZ6J28sGwW-tyS2-19" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="XvcuGTZ6J28sGwW-tyS2-20" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-42" edge="1" parent="1" source="XvcuGTZ6J28sGwW-tyS2-20" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="XvcuGTZ6J28sGwW-tyS2-21" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-43" edge="1" parent="1" source="XvcuGTZ6J28sGwW-tyS2-21" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="XvcuGTZ6J28sGwW-tyS2-22" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XvcuGTZ6J28sGwW-tyS2-44" edge="1" parent="1" source="XvcuGTZ6J28sGwW-tyS2-22" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="XvcuGTZ6J28sGwW-tyS2-23" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
