@@ -574,11 +574,11 @@
         <mxCell id="bgOQt9Nbqe7VYvoleNck-124" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="B2 order2" vertex="1">
           <mxGeometry height="30" width="60" x="4730" y="2200" as="geometry" />
         </mxCell>
-        <mxCell id="bgOQt9Nbqe7VYvoleNck-125" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="order1+C1+biddingId+workdate+clockNum" vertex="1">
+        <mxCell id="bgOQt9Nbqe7VYvoleNck-125" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="order1+C1+biddingId+workdate+clockNum+task01" vertex="1">
           <mxGeometry height="60" width="320" x="4310" y="2400" as="geometry" />
         </mxCell>
         <mxCell id="bgOQt9Nbqe7VYvoleNck-126" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="" vertex="1">
-          <mxGeometry height="60" width="120" x="4700" y="2400" as="geometry" />
+          <mxGeometry height="60" width="120" x="4680" y="2400" as="geometry" />
         </mxCell>
         <mxCell id="bgOQt9Nbqe7VYvoleNck-145" edge="1" parent="1" source="bgOQt9Nbqe7VYvoleNck-127" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="bgOQt9Nbqe7VYvoleNck-125">
           <mxGeometry relative="1" as="geometry" />
@@ -592,14 +592,14 @@
         <mxCell id="bgOQt9Nbqe7VYvoleNck-148" edge="1" parent="1" source="bgOQt9Nbqe7VYvoleNck-127" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="bgOQt9Nbqe7VYvoleNck-133">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="bgOQt9Nbqe7VYvoleNck-127" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="TASK" vertex="1">
+        <mxCell id="bgOQt9Nbqe7VYvoleNck-127" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="TASK01" vertex="1">
           <mxGeometry height="60" width="120" x="4810" y="2660" as="geometry" />
         </mxCell>
-        <mxCell id="bgOQt9Nbqe7VYvoleNck-130" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="" vertex="1">
-          <mxGeometry height="60" width="120" x="4930" y="2400" as="geometry" />
+        <mxCell id="bgOQt9Nbqe7VYvoleNck-130" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="order1+C1+biddingId+workdate+clockNum+task01" vertex="1">
+          <mxGeometry height="60" width="300" x="4840" y="2400" as="geometry" />
         </mxCell>
         <mxCell id="bgOQt9Nbqe7VYvoleNck-133" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="" vertex="1">
-          <mxGeometry height="60" width="120" x="5210" y="2400" as="geometry" />
+          <mxGeometry height="60" width="120" x="5220" y="2390" as="geometry" />
         </mxCell>
         <mxCell id="bgOQt9Nbqe7VYvoleNck-134" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="B1 order4" vertex="1">
           <mxGeometry height="30" width="60" x="4950" y="2150" as="geometry" />
@@ -625,22 +625,36 @@
         <mxCell id="bgOQt9Nbqe7VYvoleNck-143" parent="1" style="whiteSpace=wrap;html=1;rounded=0;" value="绑定当前已生效保险记录" vertex="1">
           <mxGeometry height="60" width="120" x="6730" y="1940" as="geometry" />
         </mxCell>
-        <mxCell id="bgOQt9Nbqe7VYvoleNck-151" edge="1" parent="1" source="bgOQt9Nbqe7VYvoleNck-149" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="bgOQt9Nbqe7VYvoleNck-133">
+        <mxCell id="bgOQt9Nbqe7VYvoleNck-154" edge="1" parent="1" source="bgOQt9Nbqe7VYvoleNck-149" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="bgOQt9Nbqe7VYvoleNck-152">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="5470" y="2580" />
-              <mxPoint x="5270" y="2580" />
+              <mxPoint x="5470" y="2560" />
+              <mxPoint x="5590" y="2560" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="bgOQt9Nbqe7VYvoleNck-154" edge="1" parent="1" source="bgOQt9Nbqe7VYvoleNck-149" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="bgOQt9Nbqe7VYvoleNck-152">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="bgOQt9Nbqe7VYvoleNck-155" edge="1" parent="1" source="bgOQt9Nbqe7VYvoleNck-149" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="bgOQt9Nbqe7VYvoleNck-133">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="5470" y="2560" />
+              <mxPoint x="5280" y="2560" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="bgOQt9Nbqe7VYvoleNck-149" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="TASK" vertex="1">
+        <mxCell id="bgOQt9Nbqe7VYvoleNck-149" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="TASK02" vertex="1">
           <mxGeometry height="60" width="120" x="5410" y="2670" as="geometry" />
         </mxCell>
-        <mxCell id="bgOQt9Nbqe7VYvoleNck-152" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="" vertex="1">
-          <mxGeometry height="60" width="120" x="5500" y="2410" as="geometry" />
+        <mxCell id="bgOQt9Nbqe7VYvoleNck-152" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="order1+C1+biddingId+workdate+clockNum+task02" vertex="1">
+          <mxGeometry height="60" width="290" x="5445" y="2400" as="geometry" />
+        </mxCell>
+        <mxCell id="bgOQt9Nbqe7VYvoleNck-156" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="2元" vertex="1">
+          <mxGeometry height="30" width="60" x="4489" y="2470" as="geometry" />
+        </mxCell>
+        <mxCell id="bgOQt9Nbqe7VYvoleNck-157" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="2元" vertex="1">
+          <mxGeometry height="30" width="60" x="5060" y="2470" as="geometry" />
+        </mxCell>
+        <mxCell id="bgOQt9Nbqe7VYvoleNck-158" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="2元" vertex="1">
+          <mxGeometry height="30" width="60" x="5630" y="2480" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
