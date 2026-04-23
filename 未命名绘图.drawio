@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36">
   <diagram name="第 1 页" id="aQjtJDQ2-y1gh-r2p81P">
-    <mxGraphModel dx="1885" dy="1001" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1131" dy="601" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -338,7 +338,7 @@
         <mxCell id="bgOQt9Nbqe7VYvoleNck-44" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=default;dashed=1;dashPattern=12 12;" value="打卡提前时间（发订单时配置）" vertex="1">
           <mxGeometry height="60" width="180" x="6470" y="1250" as="geometry" />
         </mxCell>
-        <mxCell id="bgOQt9Nbqe7VYvoleNck-45" parent="1" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;dashPattern=12 12;" value="自动开工状态触发时间" vertex="1">
+        <mxCell id="bgOQt9Nbqe7VYvoleNck-45" parent="1" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;dashPattern=12 12;" value="自动开工状态触发时间&lt;br&gt;(最早打卡的前x分钟)" vertex="1">
           <mxGeometry height="60" width="150" x="6320" y="1250" as="geometry" />
         </mxCell>
         <mxCell id="bgOQt9Nbqe7VYvoleNck-47" parent="1" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;dashPattern=12 12;" value="订单报名截止与开工时间间隔（小时）" vertex="1">
@@ -370,6 +370,9 @@
         </mxCell>
         <mxCell id="bgOQt9Nbqe7VYvoleNck-57" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="开工后不可取消订单" vertex="1">
           <mxGeometry height="30" width="190" x="6040" y="1090" as="geometry" />
+        </mxCell>
+        <mxCell id="bgOQt9Nbqe7VYvoleNck-58" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="11:00" vertex="1">
+          <mxGeometry height="30" width="60" x="5950" y="1860" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
