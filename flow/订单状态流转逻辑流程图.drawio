@@ -1,9 +1,477 @@
 <mxfile host="app.diagrams.net">
   <diagram name="第 1 页" id="0yhSZYPSmjbGeJojuS3v">
-    <mxGraphModel>
+    <mxGraphModel dx="3535" dy="1878" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <UserObject label="" mermaidData="{&#xa;  &quot;data&quot;: &quot;flowchart TD\n    subgraph DAILY[\&quot;① 子订单状态任务：workOrderDailyStatusTask\&quot;]\n        D2[\&quot;2 已发布\&quot;] --&gt;|\&quot;招聘开始\&quot;| D3[\&quot;3 招聘中\&quot;]\n        D3 --&gt;|\&quot;招聘截止\&quot;| HAS{\&quot;整单有有效录用&lt;br/&gt;或已有开工及以后状态？\&quot;}\n\n        HAS --&gt;|\&quot;否\&quot;| WAIT[\&quot;保持 3&lt;br/&gt;清空 next_transition_time&lt;br/&gt;等待整单自动取消\&quot;]\n        HAS --&gt;|\&quot;是，包括其他日期有人\&quot;| D4[\&quot;4 待开工\&quot;]\n\n        D4 --&gt;|\&quot;计划开工时间到\&quot;| D5[\&quot;5 开工中\&quot;]\n        D5 --&gt;|\&quot;计划工作结束\&quot;| D6[\&quot;6 待结算\&quot;]\n        D6 --&gt;|\&quot;批次结算日已到\&quot;| D7[\&quot;7 结算中\&quot;]\n\n        D7 --&gt; CHECK{\&quot;最晚打卡时间已过&lt;br/&gt;应生成工资单无缺失&lt;br/&gt;没有未结算工资单？\&quot;}\n        CHECK --&gt;|\&quot;否\&quot;| KEEP7[\&quot;保持 7，后续继续检查\&quot;]\n        CHECK --&gt;|\&quot;是，无工资义务允许零工资单\&quot;| D8[\&quot;8 已完成\&quot;]\n\n        D8 --&gt; ALL{\&quot;全部工作日日单都是 8？\&quot;}\n        ALL --&gt;|\&quot;是\&quot;| SETTLED[\&quot;父订单：已结算&lt;br/&gt;此处不退资金、不退人次\&quot;]\n        ALL --&gt;|\&quot;否\&quot;| OTHER[\&quot;等待其他日期完成\&quot;]\n\n        D4 -.-&gt;|\&quot;开工前全员退出\&quot;| BUG[\&quot;当前漏洞：4 不进入无人保护&lt;br/&gt;状态任务先执行，仍按时间推进\&quot;]\n        BUG -.-&gt; D5\n\n        FINISH[\&quot;日状态处理后：finishDueItems&lt;br/&gt;日单为 6/7/8 且打卡窗口结束&lt;br/&gt;有效录用日抢单 → FINISHED\&quot;]\n    end\n\n    subgraph CANCEL[\&quot;② 整单自动取消任务：workOrderV2AutoCancelTask\&quot;]\n        C0[\&quot;扫描：父订单仍在招聘中&lt;br/&gt;招聘截止已过&lt;br/&gt;无待审核、审核通过的报名\&quot;]\n        C0 --&gt; C1{\&quot;锁内复核&lt;br/&gt;工作日日单均为 2/3/4&lt;br/&gt;无有效录用、无有效履约事实？\&quot;}\n        C1 --&gt;|\&quot;否\&quot;| SKIP[\&quot;本轮不取消\&quot;]\n        C1 --&gt;|\&quot;是\&quot;| CANCELLED[\&quot;取消事务&lt;br/&gt;父订单 → 已取消&lt;br/&gt;工作日日单 → 9 已关闭&lt;br/&gt;取消相关有效抢单，返还人次\&quot;]\n        CANCELLED --&gt; INS{\&quot;需要等待保险处理？\&quot;}\n        INS --&gt;|\&quot;否\&quot;| DIRECT[\&quot;取消事务返还剩余冻结资金&lt;br/&gt;冻结池 → CLOSED\&quot;]\n        INS --&gt;|\&quot;是\&quot;| CLOSING[\&quot;冻结池 → CLOSING&lt;br/&gt;资金等待后续关池\&quot;]\n    end\n\n    subgraph POOL[\&quot;③ 关池任务：orderFreezePoolCloseTask\&quot;]\n        NORMAL[\&quot;正常完成候选&lt;br/&gt;父订单已结算&lt;br/&gt;池为 OPEN/CLOSING&lt;br/&gt;超过最后打卡时间\&quot;]\n        NORMAL --&gt; VALID{\&quot;保险、资金完整性通过&lt;br/&gt;全部工作日日单为 8&lt;br/&gt;工资与实际人次校验通过？\&quot;}\n        VALID --&gt;|\&quot;是\&quot;| RETURN[\&quot;返还剩余人次、剩余冻结资金&lt;br/&gt;冻结池 → CLOSED\&quot;]\n        VALID --&gt;|\&quot;否\&quot;| BLOCK[\&quot;本轮关池失败或等待&lt;br/&gt;资金和人次不返还\&quot;]\n\n        CC[\&quot;取消候选&lt;br/&gt;父订单已取消且池为 CLOSING\&quot;]\n        CC --&gt; CV{\&quot;保险及资金校验通过？\&quot;}\n        CV --&gt;|\&quot;否\&quot;| CW[\&quot;保持 CLOSING，后续重试\&quot;]\n        CV --&gt;|\&quot;是\&quot;| CR[\&quot;返还剩余冻结资金&lt;br/&gt;冻结池 → CLOSED&lt;br/&gt;不重复返还取消时已退的人次\&quot;]\n    end\n\n    WAIT -.-&gt; C0\n    D4 -.-&gt;|\&quot;自动取消先执行且满足条件\&quot;| C0\n    SETTLED -.-&gt; NORMAL\n    CLOSING -.-&gt; CC\n    BUG -.-&gt;|\&quot;失去自动取消资格；最终整单零工资单\&quot;| BLOCK\n\n    classDef danger fill:#fee2e2,stroke:#dc2626,color:#991b1b;\n    classDef success fill:#dcfce7,stroke:#16a34a,color:#166534;\n    class BUG,BLOCK danger;\n    class RETURN,DIRECT,CR success;&quot;,&#xa;  &quot;config&quot;: null&#xa;}" id="hmApGhrk1UctMuSjGIT0-1">
+          <mxCell connectable="0" parent="1" style="group;transparentBounds=1;editIcon=1;lockedGroup=0;groupPadding=10;" vertex="1">
+            <mxGeometry as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="① 子订单状态任务：workOrderDailyStatusTask" mermaidId="n:DAILY" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;verticalAlign=top;fillColor=light-dark(#ffffde,#1f2020);strokeColor=light-dark(#aaaa33,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="① 子订单状态任务：workOrderDailyStatusTask" id="hmApGhrk1UctMuSjGIT0-2">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-1" style="html=1;whiteSpace=wrap;strokeWidth=1;verticalAlign=top;fillColor=light-dark(#ffffde,#1f2020);strokeColor=light-dark(#aaaa33,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="2852" width="1740" x="677" y="30" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="2 已发布" mermaidId="n:D2" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="2 已发布" id="hmApGhrk1UctMuSjGIT0-3">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-2" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="54" width="121" x="540" y="45" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="3 招聘中" mermaidId="n:D3" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="3 招聘中" id="hmApGhrk1UctMuSjGIT0-4">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-2" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="54" width="121" x="540" y="168" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="整单有有效录用&#xa;或已有开工及以后状态？" mermaidId="n:HAS" mermaidBaseStyle="rhombus;html=1;strokeWidth=1;whiteSpace=wrap;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="整单有有效录用&#xa;或已有开工及以后状态？" id="hmApGhrk1UctMuSjGIT0-5">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-2" style="rhombus;html=1;strokeWidth=1;whiteSpace=wrap;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="298" width="298" x="452" y="291" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="保持 3&#xa;清空 next_transition_time&#xa;等待整单自动取消" mermaidId="n:WAIT" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="保持 3&#xa;清空 next_transition_time&#xa;等待整单自动取消" id="hmApGhrk1UctMuSjGIT0-6">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-2" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="93" width="247" x="333" y="658" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="4 待开工" mermaidId="n:D4" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="4 待开工" id="hmApGhrk1UctMuSjGIT0-7">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-2" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="54" width="121" x="743" y="677" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="5 开工中" mermaidId="n:D5" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="5 开工中" id="hmApGhrk1UctMuSjGIT0-8">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-2" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="54" width="121" x="1440" y="1148" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="6 待结算" mermaidId="n:D6" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="6 待结算" id="hmApGhrk1UctMuSjGIT0-9">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-2" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="54" width="121" x="1440" y="1460" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="7 结算中" mermaidId="n:D7" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="7 结算中" id="hmApGhrk1UctMuSjGIT0-10">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-2" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="54" width="121" x="1440" y="1708" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="最晚打卡时间已过&#xa;应生成工资单无缺失&#xa;没有未结算工资单？" mermaidId="n:CHECK" mermaidBaseStyle="rhombus;html=1;strokeWidth=1;whiteSpace=wrap;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="最晚打卡时间已过&#xa;应生成工资单无缺失&#xa;没有未结算工资单？" id="hmApGhrk1UctMuSjGIT0-11">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-2" style="rhombus;html=1;strokeWidth=1;whiteSpace=wrap;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="246" width="246" x="1378" y="1927" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="保持 7，后续继续检查" mermaidId="n:KEEP7" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="保持 7，后续继续检查" id="hmApGhrk1UctMuSjGIT0-12">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-2" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="54" width="217" x="1488" y="2268" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="8 已完成" mermaidId="n:D8" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="8 已完成" id="hmApGhrk1UctMuSjGIT0-13">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-2" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="54" width="121" x="1317" y="2268" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="全部工作日日单都是 8？" mermaidId="n:ALL" mermaidBaseStyle="rhombus;html=1;strokeWidth=1;whiteSpace=wrap;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="全部工作日日单都是 8？" id="hmApGhrk1UctMuSjGIT0-14">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-2" style="rhombus;html=1;strokeWidth=1;whiteSpace=wrap;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="293" width="293" x="1231" y="2372" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="父订单：已结算&#xa;此处不退资金、不退人次" mermaidId="n:SETTLED" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="父订单：已结算&#xa;此处不退资金、不退人次" id="hmApGhrk1UctMuSjGIT0-15">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-2" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="73" width="236" x="1345" y="2744" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="等待其他日期完成" mermaidId="n:OTHER" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="等待其他日期完成" id="hmApGhrk1UctMuSjGIT0-16">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-2" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="54" width="188" x="1107" y="2753" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="当前漏洞：4 不进入无人保护&#xa;状态任务先执行，仍按时间推进" mermaidId="n:BUG" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=#fee2e2;strokeColor=#dc2626;fontColor=#991b1b;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="当前漏洞：4 不进入无人保护&#xa;状态任务先执行，仍按时间推进" id="hmApGhrk1UctMuSjGIT0-17">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-2" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=#fee2e2;strokeColor=#dc2626;fontColor=#991b1b;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="73" width="284" x="602" y="855" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="日状态处理后：finishDueItems&#xa;日单为 6/7/8 且打卡窗口结束&#xa;有效录用日抢单 → FINISHED" mermaidId="n:FINISH" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="日状态处理后：finishDueItems&#xa;日单为 6/7/8 且打卡窗口结束&#xa;有效录用日抢单 → FINISHED" id="hmApGhrk1UctMuSjGIT0-18">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-2" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="93" width="278" x="35" y="2734" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="招聘开始" mermaidId="e:D2-&gt;D3#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="招聘开始" id="hmApGhrk1UctMuSjGIT0-19">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-2" source="hmApGhrk1UctMuSjGIT0-3" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-4">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="招聘截止" mermaidId="e:D3-&gt;HAS#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="招聘截止" id="hmApGhrk1UctMuSjGIT0-20">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-2" source="hmApGhrk1UctMuSjGIT0-4" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-5">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="否" mermaidId="e:HAS-&gt;WAIT#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.11;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="否" id="hmApGhrk1UctMuSjGIT0-21">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-2" source="hmApGhrk1UctMuSjGIT0-5" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.11;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-6">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="456" y="623" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="是，包括其他日期有人" mermaidId="e:HAS-&gt;D4#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=1;exitY=0.95;entryX=0.5;entryY=0;" mermaidBaseValue="是，包括其他日期有人" id="hmApGhrk1UctMuSjGIT0-22">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-2" source="hmApGhrk1UctMuSjGIT0-5" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=1;exitY=0.95;entryX=0.5;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-7">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="804" y="623" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="计划开工时间到" mermaidId="e:D4-&gt;D5#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=1;exitY=0.81;entryX=0.07;entryY=0;" mermaidBaseValue="计划开工时间到" id="hmApGhrk1UctMuSjGIT0-23">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-2" source="hmApGhrk1UctMuSjGIT0-7" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=1;exitY=0.81;entryX=0.07;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-8">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="1089" y="785" />
+                <mxPoint x="1089" y="820" />
+                <mxPoint x="1089" y="891" />
+                <mxPoint x="1089" y="963" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="计划工作结束" mermaidId="e:D5-&gt;D6#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="计划工作结束" id="hmApGhrk1UctMuSjGIT0-24">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-2" source="hmApGhrk1UctMuSjGIT0-8" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-9">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="批次结算日已到" mermaidId="e:D6-&gt;D7#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="批次结算日已到" id="hmApGhrk1UctMuSjGIT0-25">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-2" source="hmApGhrk1UctMuSjGIT0-9" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-10">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:D7-&gt;CHECK#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="" id="hmApGhrk1UctMuSjGIT0-26">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-2" source="hmApGhrk1UctMuSjGIT0-10" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-11">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="否" mermaidId="e:CHECK-&gt;KEEP7#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.82;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="否" id="hmApGhrk1UctMuSjGIT0-27">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-2" source="hmApGhrk1UctMuSjGIT0-11" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.82;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-12">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="1596" y="2199" />
+                <mxPoint x="1596" y="2233" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="是，无工资义务允许零工资单" mermaidId="e:CHECK-&gt;D8#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.08;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="是，无工资义务允许零工资单" id="hmApGhrk1UctMuSjGIT0-28">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-2" source="hmApGhrk1UctMuSjGIT0-11" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.08;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-13">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="1377" y="2199" />
+                <mxPoint x="1377" y="2233" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:D8-&gt;ALL#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="" id="hmApGhrk1UctMuSjGIT0-29">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-2" source="hmApGhrk1UctMuSjGIT0-13" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-14">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="是" mermaidId="e:ALL-&gt;SETTLED#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.74;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="是" id="hmApGhrk1UctMuSjGIT0-30">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-2" source="hmApGhrk1UctMuSjGIT0-14" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.74;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-15">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="1463" y="2699" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="否" mermaidId="e:ALL-&gt;OTHER#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.01;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="否" id="hmApGhrk1UctMuSjGIT0-31">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-2" source="hmApGhrk1UctMuSjGIT0-14" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.01;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-16">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="1201" y="2699" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="开工前全员退出" mermaidId="e:D4-&gt;BUG#0" mermaidBaseStyle="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.34;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="开工前全员退出" id="hmApGhrk1UctMuSjGIT0-32">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-2" source="hmApGhrk1UctMuSjGIT0-7" style="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.34;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-17">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="744" y="785" />
+                <mxPoint x="744" y="820" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:BUG-&gt;D5#0" mermaidBaseStyle="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=1;exitY=0.64;entryX=0.65;entryY=0;" mermaidBaseValue="" id="hmApGhrk1UctMuSjGIT0-33">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-2" source="hmApGhrk1UctMuSjGIT0-17" style="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=1;exitY=0.64;entryX=0.65;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-8">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="1639" y="963" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="② 整单自动取消任务：workOrderV2AutoCancelTask" mermaidId="n:CANCEL" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;verticalAlign=top;fillColor=light-dark(#ffffde,#1f2020);strokeColor=light-dark(#aaaa33,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="② 整单自动取消任务：workOrderV2AutoCancelTask" id="hmApGhrk1UctMuSjGIT0-34">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-1" style="html=1;whiteSpace=wrap;strokeWidth=1;verticalAlign=top;fillColor=light-dark(#ffffde,#1f2020);strokeColor=light-dark(#aaaa33,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="1312" width="666" x="218" y="830" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="扫描：父订单仍在招聘中&#xa;招聘截止已过&#xa;无待审核、审核通过的报名" mermaidId="n:C0" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="扫描：父订单仍在招聘中&#xa;招聘截止已过&#xa;无待审核、审核通过的报名" id="hmApGhrk1UctMuSjGIT0-35">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-34" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="93" width="252" x="270" y="45" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="锁内复核&#xa;工作日日单均为 2/3/4&#xa;无有效录用、无有效履约事实？" mermaidId="n:C1" mermaidBaseStyle="rhombus;html=1;strokeWidth=1;whiteSpace=wrap;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="锁内复核&#xa;工作日日单均为 2/3/4&#xa;无有效录用、无有效履约事实？" id="hmApGhrk1UctMuSjGIT0-36">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-34" style="rhombus;html=1;strokeWidth=1;whiteSpace=wrap;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="374" width="374" x="209" y="188" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="本轮不取消" mermaidId="n:SKIP" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="本轮不取消" id="hmApGhrk1UctMuSjGIT0-37">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-34" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="54" width="140" x="491" y="660" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="取消事务&#xa;父订单 → 已取消&#xa;工作日日单 → 9 已关闭&#xa;取消相关有效抢单，返还人次" mermaidId="n:CANCELLED" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="取消事务&#xa;父订单 → 已取消&#xa;工作日日单 → 9 已关闭&#xa;取消相关有效抢单，返还人次" id="hmApGhrk1UctMuSjGIT0-38">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-34" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="112" width="268" x="135" y="631" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="需要等待保险处理？" mermaidId="n:INS" mermaidBaseStyle="rhombus;html=1;strokeWidth=1;whiteSpace=wrap;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="需要等待保险处理？" id="hmApGhrk1UctMuSjGIT0-39">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-34" style="rhombus;html=1;strokeWidth=1;whiteSpace=wrap;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="246" width="246" x="146" y="812" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="取消事务返还剩余冻结资金&#xa;冻结池 → CLOSED" mermaidId="n:DIRECT" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#166534;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="取消事务返还剩余冻结资金&#xa;冻结池 → CLOSED" id="hmApGhrk1UctMuSjGIT0-40">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-34" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#166534;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="73" width="252" x="280" y="1214" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="冻结池 → CLOSING&#xa;资金等待后续关池" mermaidId="n:CLOSING" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="冻结池 → CLOSING&#xa;资金等待后续关池" id="hmApGhrk1UctMuSjGIT0-41">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-34" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="73" width="195" x="35" y="1214" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:C0-&gt;C1#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="" id="hmApGhrk1UctMuSjGIT0-42">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-34" source="hmApGhrk1UctMuSjGIT0-35" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-36">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="否" mermaidId="e:C1-&gt;SKIP#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.87;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="否" id="hmApGhrk1UctMuSjGIT0-43">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-34" source="hmApGhrk1UctMuSjGIT0-36" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.87;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-37">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="561" y="597" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="是" mermaidId="e:C1-&gt;CANCELLED#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.21;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="是" id="hmApGhrk1UctMuSjGIT0-44">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-34" source="hmApGhrk1UctMuSjGIT0-36" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.21;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-38">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="269" y="597" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:CANCELLED-&gt;INS#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="" id="hmApGhrk1UctMuSjGIT0-45">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-34" source="hmApGhrk1UctMuSjGIT0-38" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-39">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="否" mermaidId="e:INS-&gt;DIRECT#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.93;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="否" id="hmApGhrk1UctMuSjGIT0-46">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-34" source="hmApGhrk1UctMuSjGIT0-39" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.93;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-40">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="406" y="1093" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="是" mermaidId="e:INS-&gt;CLOSING#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.07;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="是" id="hmApGhrk1UctMuSjGIT0-47">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-34" source="hmApGhrk1UctMuSjGIT0-39" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.07;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-41">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="132" y="1093" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="③ 关池任务：orderFreezePoolCloseTask" mermaidId="n:POOL" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;verticalAlign=top;fillColor=light-dark(#ffffde,#1f2020);strokeColor=light-dark(#aaaa33,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="③ 关池任务：orderFreezePoolCloseTask" id="hmApGhrk1UctMuSjGIT0-48">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-1" style="html=1;whiteSpace=wrap;strokeWidth=1;verticalAlign=top;fillColor=light-dark(#ffffde,#1f2020);strokeColor=light-dark(#aaaa33,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="717" width="2307" x="30" y="2912" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="正常完成候选&#xa;父订单已结算&#xa;池为 OPEN/CLOSING&#xa;超过最后打卡时间" mermaidId="n:NORMAL" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="正常完成候选&#xa;父订单已结算&#xa;池为 OPEN/CLOSING&#xa;超过最后打卡时间" id="hmApGhrk1UctMuSjGIT0-49">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-48" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="112" width="205" x="2008" y="45" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="保险、资金完整性通过&#xa;全部工作日日单为 8&#xa;工资与实际人次校验通过？" mermaidId="n:VALID" mermaidBaseStyle="rhombus;html=1;strokeWidth=1;whiteSpace=wrap;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="保险、资金完整性通过&#xa;全部工作日日单为 8&#xa;工资与实际人次校验通过？" id="hmApGhrk1UctMuSjGIT0-50">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-48" style="rhombus;html=1;strokeWidth=1;whiteSpace=wrap;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="323" width="323" x="1949" y="207" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="返还剩余人次、剩余冻结资金&#xa;冻结池 → CLOSED" mermaidId="n:RETURN" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#166534;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="返还剩余人次、剩余冻结资金&#xa;冻结池 → CLOSED" id="hmApGhrk1UctMuSjGIT0-51">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-48" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#166534;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="73" width="268" x="1994" y="609" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="本轮关池失败或等待&#xa;资金和人次不返还" mermaidId="n:BLOCK" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=#fee2e2;strokeColor=#dc2626;fontColor=#991b1b;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="本轮关池失败或等待&#xa;资金和人次不返还" id="hmApGhrk1UctMuSjGIT0-52">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-48" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=#fee2e2;strokeColor=#dc2626;fontColor=#991b1b;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="73" width="204" x="1303" y="609" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="取消候选&#xa;父订单已取消且池为 CLOSING" mermaidId="n:CC" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="取消候选&#xa;父订单已取消且池为 CLOSING" id="hmApGhrk1UctMuSjGIT0-53">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-48" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="73" width="270" x="185" y="64" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="保险及资金校验通过？" mermaidId="n:CV" mermaidBaseStyle="rhombus;html=1;strokeWidth=1;whiteSpace=wrap;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="保险及资金校验通过？" id="hmApGhrk1UctMuSjGIT0-54">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-48" style="rhombus;html=1;strokeWidth=1;whiteSpace=wrap;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="272" width="272" x="184" y="232" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="保持 CLOSING，后续重试" mermaidId="n:CW" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="保持 CLOSING，后续重试" id="hmApGhrk1UctMuSjGIT0-55">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-48" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="54" width="238" x="529" y="618" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="返还剩余冻结资金&#xa;冻结池 → CLOSED&#xa;不重复返还取消时已退的人次" mermaidId="n:CR" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#166534;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="返还剩余冻结资金&#xa;冻结池 → CLOSED&#xa;不重复返还取消时已退的人次" id="hmApGhrk1UctMuSjGIT0-56">
+          <mxCell parent="hmApGhrk1UctMuSjGIT0-48" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#166534;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="93" width="268" x="35" y="599" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:NORMAL-&gt;VALID#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="" id="hmApGhrk1UctMuSjGIT0-57">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-48" source="hmApGhrk1UctMuSjGIT0-49" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-50">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="是" mermaidId="e:VALID-&gt;RETURN#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.54;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="是" id="hmApGhrk1UctMuSjGIT0-58">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-48" source="hmApGhrk1UctMuSjGIT0-50" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.54;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-51">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="2128" y="564" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="否" mermaidId="e:VALID-&gt;BLOCK#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0;exitY=0.78;entryX=1;entryY=0.18;" mermaidBaseValue="否" id="hmApGhrk1UctMuSjGIT0-59">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-48" source="hmApGhrk1UctMuSjGIT0-50" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0;exitY=0.78;entryX=1;entryY=0.18;rounded=0;" target="hmApGhrk1UctMuSjGIT0-52">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="1765" y="564" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:CC-&gt;CV#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="" id="hmApGhrk1UctMuSjGIT0-60">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-48" source="hmApGhrk1UctMuSjGIT0-53" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-54">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="否" mermaidId="e:CV-&gt;CW#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=1;exitY=0.8;entryX=0.5;entryY=0;" mermaidBaseValue="否" id="hmApGhrk1UctMuSjGIT0-61">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-48" source="hmApGhrk1UctMuSjGIT0-54" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=1;exitY=0.8;entryX=0.5;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-55">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="648" y="564" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="是" mermaidId="e:CV-&gt;CR#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.11;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="是" id="hmApGhrk1UctMuSjGIT0-62">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-48" source="hmApGhrk1UctMuSjGIT0-54" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.11;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-56">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="169" y="564" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:WAIT-&gt;C0#0" mermaidBaseStyle="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=1;entryY=0.31;" mermaidBaseValue="" id="hmApGhrk1UctMuSjGIT0-63">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-1" source="hmApGhrk1UctMuSjGIT0-6" style="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=1;entryY=0.31;rounded=0;" target="hmApGhrk1UctMuSjGIT0-35">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="1133" y="815" />
+                <mxPoint x="1133" y="850" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="自动取消先执行且满足条件" mermaidId="e:D4-&gt;C0#0" mermaidBaseStyle="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0;exitY=0.89;entryX=1;entryY=0.34;" mermaidBaseValue="自动取消先执行且满足条件" id="hmApGhrk1UctMuSjGIT0-64">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-1" source="hmApGhrk1UctMuSjGIT0-7" style="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0;exitY=0.89;entryX=1;entryY=0.34;rounded=0;" target="hmApGhrk1UctMuSjGIT0-35">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="1249" y="815" />
+                <mxPoint x="1249" y="850" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:SETTLED-&gt;NORMAL#0" mermaidBaseStyle="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="" id="hmApGhrk1UctMuSjGIT0-65">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-1" source="hmApGhrk1UctMuSjGIT0-15" style="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-49">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:CLOSING-&gt;CC#0" mermaidBaseStyle="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="" id="hmApGhrk1UctMuSjGIT0-66">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-1" source="hmApGhrk1UctMuSjGIT0-41" style="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-53">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="失去自动取消资格；最终整单零工资单" mermaidId="e:BUG-&gt;BLOCK#0" mermaidBaseStyle="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.47;entryY=0;" mermaidBaseValue="失去自动取消资格；最终整单零工资单" id="hmApGhrk1UctMuSjGIT0-67">
+          <mxCell edge="1" parent="hmApGhrk1UctMuSjGIT0-1" source="hmApGhrk1UctMuSjGIT0-17" style="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.47;entryY=0;rounded=0;" target="hmApGhrk1UctMuSjGIT0-52">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="1421" y="993" />
+                <mxPoint x="1421" y="1205" />
+                <mxPoint x="1421" y="1427" />
+                <mxPoint x="1421" y="1517" />
+                <mxPoint x="1421" y="1608" />
+                <mxPoint x="1421" y="1765" />
+                <mxPoint x="1421" y="1923" />
+                <mxPoint x="1421" y="2081" />
+                <mxPoint x="1421" y="2229" />
+                <mxPoint x="1421" y="2263" />
+                <mxPoint x="1421" y="2325" />
+                <mxPoint x="1421" y="2377" />
+                <mxPoint x="1421" y="2548" />
+                <mxPoint x="1421" y="2729" />
+                <mxPoint x="1421" y="2810" />
+                <mxPoint x="1421" y="2882" />
+                <mxPoint x="1421" y="2907" />
+                <mxPoint x="1421" y="2932" />
+                <mxPoint x="1421" y="3013" />
+                <mxPoint x="1421" y="3094" />
+                <mxPoint x="1421" y="3280" />
+                <mxPoint x="1421" y="3476" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
       </root>
     </mxGraphModel>
   </diagram>
